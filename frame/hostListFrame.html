@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>主机列表</title>
+		<script type="text/javascript" language="javascript" src="../resource/js/authentication.js"></script>
+	</head>
+
+	<body bgcolor="#CCCCCC">
+		<center>
+			<table id="hostlist" width="936" border="1.5" cellspacing="2" cellpadding="2" summary="当前主机列表">
+				<caption>
+					<strong>主机列表</strong>
+				</caption>
+			</table>
+		</center>
+		<script>
+			var xhr;
+			if (window.XMLHttpRequest) {
+				xhr = new XMLHttpRequest();
+			} else {
+				xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					var res = xhr.responseText;
+					if (res != "UnAuthorized") {
+						document.getElementById('hostlist').innerHTML = res;
+					}
+				}
+			}
+			xhr.open("GET", "../api/getHostList.php", true);
+			xhr.send();
+		</script>
+	</body>
+
+</html>

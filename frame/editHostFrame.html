@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>编辑主机</title>
+  <style type="text/css">
+    body {
+      margin-left: 0px;
+      margin-top: 0px;
+      margin-right: 0px;
+      margin-bottom: 0px;
+    }
+  </style>
+  <script type="text/javascript" language="javascript" src="../resource/js/authentication.js"></script>
+  <script type="text/javascript" language="javascript" src="../resource/js/utils.js"></script>
+</head>
+
+<body>
+  <table width="350" border="0" cellspacing="2" cellpadding="0" bgcolor="#CCCCCC">
+    <tr>
+      <td valign="top" bgcolor="#FFFFFF">
+        <table width="100%" border="0" cellspacing="6" cellpadding="0">
+          <form name="frm" method="post" action="../api/postHostInfo.php">
+            <tr>
+              <td height="24"><b>&gt;&gt;编辑主机信息
+                  <input name="lb" type="hidden" id="lb" value="五项竞赛">
+                  <input name="id" type="hidden" id="id" value="554">
+                </b></td>
+            </tr>
+            <tr>
+              <td height="24">主机ID：<span id="hID">正在获取</span></td>
+            </tr>
+            <tr>
+              <td height="24">系统类型：
+                <select name="osname" id="osname">
+                  <option value='Linux'>Linux</option>
+                  <option value='Windows'>Windows</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td height="24">主机名称：
+                <input name="hn" type="text" id="hn" size="26" />
+                <a href="#" onclick="frm.hn.value=''">[清除]</a>
+              </td>
+            </tr>
+             <tr>
+              <td height="24">主机地址：
+                <input name="hip" type="text" id="hip" size="26" />
+                <a href="#" onclick="frm.hip.value=''">[清除]</a>
+              </td>
+            </tr>
+            <tr>
+              <td height="24">
+                状态修改：
+                <input type='radio' name='status' id='status' value='0'>不可用&nbsp;<input type='radio' name='status' id='status' value='1'>可用
+              </td>
+            </tr>
+            <tr>
+              <td height="24" align="right">
+                <input type="submit" name="button" id="button" value="修改">
+                <input type="button" name="button2" id="button2" value="取消" onclick="window.close()"></td>
+            </tr>
+          </form>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <script>
+  	document.getElementById('hID').innerHTML = getUrlParam('id');
+	var xhr;
+	if (window.XMLHttpRequest) {
+		xhr = new XMLHttpRequest();
+	} else {
+		xhr = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+			var res = JSON.parse(xhr.responseText);
+			console.log(res);
+			if (res.result == "success") {
+				document.getElementById('osname').value = res.data[0].OS;
+				document.getElementById('hn').value = res.data[0].Name;
+				document.getElementById('hip').value = res.data[0].IpAddr;
+				document.getElementById('status').value = res.data[0].Status;
+				document.getElementsByName('status').item(res.data[0].Status).setAttribute('checked', 'checked');
+			} else {
+				document.getElementsByTagName('body').item(0).innerHTML = '';
+				alert('抱歉，我们无法访问当前ID为：【' + getUrlParam('id') + '】的主机信息。建议您核实该主机是否已在其他账号发起移除流程或您是否有权限操作该主机！');
+				window.close();
+			}
+        }
+    }
+    xhr.open("GET", "../api/getHostDetail.php?hostId=" + getUrlParam('id'), true);
+    xhr.send();
+  </script>
+</body>
+
+</html>
